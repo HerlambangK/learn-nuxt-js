@@ -1,84 +1,87 @@
-import type { Icon } from '#build/components';
 <template>
   <header class="sticky top-0 z-20 border-b bg-background/80 backdrop-blur">
-    <!-- flex container -->
     <div class="container flex h-16 items-center justify-between">
-      <!-- logo page title -->
       <div class="flex items-center gap-3">
-        <!-- logo -->
-        <img src="/icon.svg" alt="Portofolio" class="h-8 w-8 object-contain" />
-        <!-- page title -->
+        <img
+          src="/Herlambang.jpg"
+          alt="Portofolio"
+          class="h-8 w-8 object-contain"
+        />
         <NuxtLink class="text-xl font-bold" to="/">Portofolio</NuxtLink>
       </div>
-      <!-- right side of Headers -->
-      <div class="flex items-center gap-5">
-        <button
-          @click="toggleTheme()"
-          class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border bg-background"
-        >
-          <Icon name="heroicons:sun" class="h-6 w-6" />
-        </button>
-        <!-- <HMenu as="div" class="relative">
-          <HMenuButton
-            class="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full border bg-background"
+
+      <div class="hidden items-center gap-4 md:inline-flex">
+        <NuxtLink to="/" :class="linkClasses('/')"> Home </NuxtLink>
+        <NuxtLink to="/about" :class="linkClasses('/about')"> About </NuxtLink>
+        <NuxtLink to="/portofolio" :class="linkClasses('/portofolio')">
+          Portofolio
+        </NuxtLink>
+        <NuxtLink to="/contact" :class="linkClasses('/contact')">
+          Contact
+        </NuxtLink>
+        <div class="flex items-center gap-5">
+          <button
+            @click="toggleTheme"
+            class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border bg-background"
           >
-            <img
-              src="https://randomuser.me/api/portraits/med/men/75.jpg"
-              alt="Logged in user"
-              class="h-full w-full"
+            <Icon
+              :name="mode.value === 'dark' ? 'heroicons:sun' : 'heroicons:moon'"
+              class="h-6 w-6"
             />
-          </HMenuButton>
-          <TransitionScale :scale="0.8" origin="top right">
-            <HMenuItems
-              class="absolute right-0 z-10 mt-3 w-48 rounded-md border bg-background focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            >
-              <div class="border-b px-3 py-1.5 text-sm">
-                <p class="font-semibold">Hello John</p>
-                <a
-                  href="mailto:johndoe@test.com"
-                  class="leading-none text-muted-foreground"
-                  >johndoe@test.com</a
-                >
-              </div>
-              <div class="p-1">
-                <template v-for="(p, i) in profileMenuOptions" :key="i">
-                  <HMenuItem v-if="!p.divider" v-slot="{ active }">
-                    <button
-                      :class="[active && 'bg-muted']"
-                      class="inline-flex w-full items-center rounded-md p-2 text-sm font-medium"
-                    >
-                      {{ p.title }}
-                    </button>
-                  </HMenuItem>
-                  <hr v-if="p.divider" class="my-1" />
-                </template>
-              </div>
-            </HMenuItems>
-          </TransitionScale>
-        </HMenu> -->
+          </button>
+        </div>
+        <!-- <ButtonSession /> -->
+      </div>
+      <!-- Display Burger Menu on mobile screens (screen width <= 640px) -->
+      <div class="flex items-center gap-5 md:hidden">
+        <!-- Insert your Burger Menu component here -->
+        <BurgerMenu />
       </div>
     </div>
   </header>
 </template>
 
 <script setup lang="ts">
-// Color mode
-const mode = useColorMode();
-// Toggle color mode
-const toggleTheme = () => {
-  mode.value = mode.value === "light" ? "dark" : "light";
-};
-// Mobile drawer state
-const isOpen = ref(false);
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { useRoute } from 'vue-router'
+// import { useColorMode } from '@nuxt/content-theme'
+// Import Icon and other dependencies as needed
 
-// Items that will be displayed in menu
-// const profileMenuOptions = [
-//   { title: "Profile" },
-//   { title: "Billing" },
-//   { title: "Settings" },
-//   { title: "Team members" },
-//   { title: "Sales" },
-//   { divider: true },
-//   { title: "Logout" },
-// ];
+const isScrolled = ref(false)
+const route = useRoute()
+const mode = useColorMode()
+const isOpen = ref(false)
+
+console.log(mode)
+
+const handleScroll = () => {
+  if (window.pageYOffset > 0) {
+    isScrolled.value = true
+  } else {
+    isScrolled.value = false
+  }
+}
+
+const toggleTheme = () => {
+  mode.value = mode.value === 'light' ? 'dark' : 'light'
+}
+
+onMounted(() => {
+  window.addEventListener('scroll', handleScroll)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('scroll', handleScroll)
+})
+
+const navbarClasses = ref([
+  'fixed inset-x-0 top-0 z-10 flex justify-between bg-white p-4 transition lg:px-12',
+  isScrolled.value ? 'shadow-sm' : '',
+])
+
+const linkClasses = (targetPath: any) => {
+  return route.path === targetPath
+    ? 'rounded-lg px-3 py-2 text-sm font-semibold bg-zinc-100 text-zinc-900'
+    : 'rounded-lg px-3 py-2 text-sm font-semibold hover:bg-zinc-300 hover:text-zinc-900'
+}
 </script>

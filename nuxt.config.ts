@@ -7,7 +7,12 @@ export default defineNuxtConfig({
     "@vueuse/nuxt",
     "nuxt-headlessui",
     "@morev/vue-transitions/nuxt",
+    "@nuxtjs/color-mode",
   ],
+  colorMode: {
+    classSuffix: "",
+  },
+
   tailwindcss: { exposeConfig: true },
   headlessui: { prefix: "H" },
   app: {
@@ -17,7 +22,7 @@ export default defineNuxtConfig({
         {
           rel: "icon",
           type: "image/x-icon",
-          href: "/icon.svg",
+          href: "/Herlambang.jpg",
         },
         {
           rel: "stylesheet",
